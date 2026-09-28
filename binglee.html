@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binglee Legends</title>
+<link rel="manifest" href="binglee-manifest.json">
+<meta name="theme-color" content="#FFD700">
+<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<style>
+body{margin:0;background:linear-gradient(#0f0c29,#302b63,#24243e);color:#fff;font-family:Arial;text-align:center;min-height:100vh}
+h1{color:#FFD700;text-shadow:0 0 10px #FFD700;margin:15px;font-size:28px}
+.players{display:grid;grid-template-columns:1fr 1fr;gap:15px;padding:15px;max-width:500px;margin:auto}
+.card{background:#fff;color:#111;border-radius:20px;padding:15px;border:5px solid #555;cursor:pointer}
+.card.selected{border-color:#FFD700;transform:scale(1.08);background:#fff9c4;box-shadow:0 0 20px #FFD700}
+.card span{font-size:55px;display:block}
+.btn{padding:16px 35px;font-size:22px;background:#FFD700;color:#000;border:none;border-radius:30px;margin:10px;font-weight:bold;box-shadow:0 5px 0 #b89600}
+#installBtn{display:none;background:#00FF00;box-shadow:0 5px 0 #00AA00}
+#game{width:100vw;height:65vh;background:linear-gradient(#87CEEB,#E0F6FF,#90EE90);position:relative;display:none;overflow:hidden}
+#hero{font-size:70px;position:absolute;left:30px;top:50%;transition:top 0.12s}
+.hud{position:absolute;top:10px;display:flex;justify-content:space-between;width:96%;left:2%}
+.hud div{background:rgba(0,0,0,0.7);padding:8px 14px;border-radius:12px;font-weight:bold}
+</style>
+</head>
+<body>
+<div id="selectScreen">
+<h1>⭐ CHOOSE YOUR LEGEND ⭐</h1>
+<div class="players">
+<div class="card" onclick="choose('Rajab Binglee The Legend Teacher','🚗')"><span>🚗</span><b>RAJAB</b><br>BINGLEE<br><small>The Legend</small></div>
+<div class="card" onclick="choose('Hamoudi Kaboos The Nightmare','👻')"><span>👻</span><b>HAMOUDI</b><br>KABOOS<br><small>The Nightmare</small></div>
+<div class="card" onclick="choose('Bobo The Lightning Fast','⚡')"><span>⚡</span><b>BOBO</b><br>Fast</div>
+<div class="card" onclick="choose('Amir The Prince','👑')"><span>👑</span><b>AMIR</b><br>Prince</div>
+</div>
+<button class="btn" onclick="startGame()">START GAME 🚀</button><br>
+<button class="btn" id="installBtn" onclick="installApp()">📲 INSTALL ICON</button>
+<p id="iosHint" style="display:none">For iPhone: Tap Share ⬆️ then Add to Home Screen</p>
+</div>
+
+<div id="game" onclick="jump()">
+<div class="hud"><div id="pName">Player</div><div>Score: <span id="s">0</span></div></div>
+<div id="hero">🚗</div>
+</div>
+
+<script>
+let selectedName='Rajab Binglee', selectedEmoji='🚗', topPos=50, score=0, deferredPrompt;
+function speak(t){speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=0.85;u.pitch=1.1;speechSynthesis.speak(u);}
+function choose(name,emoji){selectedName=name;selectedEmoji=emoji;document.querySelectorAll('.card').forEach(c=>c.classList.remove('selected'));event.currentTarget.classList.add('selected');speak(name+'!!!');}
+function startGame(){document.getElementById('selectScreen').style.display='none';document.getElementById('game').style.display='block';document.getElementById('hero').innerText=selectedEmoji;document.getElementById('pName').innerText=selectedName.split(' ')[0];speak(selectedName+' enters!');}
+function jump(){topPos=topPos>10?topPos-20:10;document.getElementById('hero').style.top=topPos+'%';score++;document.getElementById('s').innerText=score;if(score==10){document.getElementById('hero').innerText='✈️';speak('Flying Legendary!');} }
+setInterval(()=>{if(document.getElementById('game').style.display=='block'){topPos+=2.5;if(topPos>85)topPos=85;document.getElementById('hero').style.top=topPos+'%';}},100);
+
+// Install logic
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBtn').style.display='inline-block';});
+function installApp(){if(deferredPrompt){deferredPrompt.prompt();}else{document.getElementById('iosHint').style.display='block';}}
+if(/iPad|iPhone|iPod/.test(navigator.userAgent)) document.getElementById('iosHint').style.display='block';
+if('serviceWorker' in navigator){navigator.serviceWorker.register('data:text/javascript;base64,'+btoa('self.addEventListener(\"fetch\",e=>{});'));}
+</script>
+</body>
+</html>

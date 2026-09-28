@@ -1,0 +1,9 @@
+{
+  "name": "Binglee Legends - Rajab Game",
+  "short_name": "Binglee",
+  "icons": [{"src": "icon.png","sizes": "512x512","type": "image/png"}],
+  "start_url": "./binglee.html",
+  "display": "standalone",
+  "background_color": "#0f0c29",
+  "theme_color": "#FFD700"
+}
